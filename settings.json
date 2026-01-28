@@ -1,0 +1,18 @@
+{
+  "env": {
+    "MAX_THINKING_TOKENS": "32000"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(./hack/spec_metadata.sh)",
+      "Bash(hack/spec_metadata.sh)",
+      "Bash(bash hack/spec_metadata.sh)"
+    ]
+  },
+  "enableAllProjectMcpServers": false,
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true,
+    "superpowers@superpowers-marketplace": true
+  },
+  "language": "english"
+}
