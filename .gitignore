@@ -21,3 +21,5 @@ skills/skill-creator
 skills/find-skills
 
 *.skill
+downloads
+.DS_Store

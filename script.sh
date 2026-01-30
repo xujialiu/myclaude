@@ -3,4 +3,4 @@
 /plugin install superpowers@superpowers-marketplace
 
 # install skill-creator
-npx skills add https://github.com/anthropics/skills --skill skill-creator
+npx skills add https://github.com/anthropics/skills
