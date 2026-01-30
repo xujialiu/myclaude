@@ -23,3 +23,5 @@ skills/find-skills
 *.skill
 downloads
 .DS_Store
+
+settings.json
