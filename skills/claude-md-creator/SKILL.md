@@ -5,7 +5,7 @@ description: Create or update CLAUDE.md files for projects. Use when (1) startin
 
 # CLAUDE.md Creator
 
-Create concise, effective CLAUDE.md files that onboard Claude to codebases.
+Create and update concise, effective CLAUDE.md files that onboard Claude to codebases.
 
 ## Core Principles
 
@@ -14,7 +14,59 @@ Create concise, effective CLAUDE.md files that onboard Claude to codebases.
 3. **Progressive disclosure** - Reference docs/architecture.md for details
 4. **Conda for Python** - Always use `conda run -n <env_name> python` for Python execution
 
-## Workflow
+## Mode Selection
+
+First, check if CLAUDE.md exists in the project root:
+- **Exists**: Follow [Update Workflow](#update-workflow)
+- **Does not exist**: Follow [Creation Workflow](#creation-workflow)
+
+---
+
+## Update Workflow
+
+When updating an existing CLAUDE.md:
+
+### 1. Read Current CLAUDE.md
+
+Read the existing file to understand:
+- Current structure and sections
+- Information already documented
+- Custom sections the user may have added
+
+### 2. Analyze What Changed
+
+Compare current codebase against documented content:
+- **Tech stack changes** - New dependencies, version updates
+- **Structure changes** - New directories, renamed folders
+- **Command changes** - Updated build/test commands
+- **New patterns** - Recently introduced conventions
+
+### 3. Preserve User Customizations
+
+Keep intact:
+- Custom sections not auto-generated
+- Project-specific notes and warnings
+- Links to external resources user added
+- Any section marked with comments like `<!-- custom -->`
+
+### 4. Update Sections
+
+For each standard section, update only if codebase differs:
+- **Tech Stack** - Check package.json, requirements.txt, go.mod, etc.
+- **Project Structure** - Verify directories still exist and are accurate
+- **Development commands** - Test that commands still work
+- **Additional Documentation** - Verify linked files exist
+
+### 5. Validate Changes
+
+Before saving:
+- Ensure file stays under 50 lines
+- Verify no duplicate information with config files
+- Confirm all referenced paths/commands are valid
+
+---
+
+## Creation Workflow
 
 ### 1. Analyze the Codebase
 
@@ -24,7 +76,7 @@ Explore the project structure:
 - Detect patterns: dependency injection, state management, API design
 - Note build/test commands from package.json, Makefile, etc.
 
-### 2. Create docs/architecture.md
+### 2. Create or Update docs/architecture.md
 
 Extract observed patterns into docs/architecture.md covering:
 - **Architectural patterns** - e.g., "Repository pattern for data access"
@@ -34,7 +86,7 @@ Extract observed patterns into docs/architecture.md covering:
 
 Only document patterns appearing in multiple files.
 
-### 3. Create CLAUDE.md
+### 3. Write CLAUDE.md
 
 Structure (aim for ~40-50 lines max):
 
@@ -96,11 +148,19 @@ After creating CLAUDE.md and docs/architecture.md, use the code-reviewer agent t
 
 ## Anti-patterns
 
+### Creation Anti-patterns
 - Including formatting/linting rules (use .eslintrc, .prettierrc instead)
 - Documenting every file or function
 - Adding "nice to have" sections
 - Exceeding 50 lines in CLAUDE.md
 - Duplicating info already in package.json or configs
+
+### Update Anti-patterns
+- Overwriting user customizations without asking
+- Removing sections just because they weren't auto-generated
+- Adding back information that was intentionally removed
+- Making changes without verifying accuracy in codebase
+- Rewriting entire file when only one section needs updating
 
 ## Reference
 

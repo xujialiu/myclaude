@@ -95,7 +95,9 @@ Document patterns observed across multiple files:
 
 ## Quality Checklist
 
-Before finalizing CLAUDE.md:
+### Creation Checklist
+
+Before finalizing a new CLAUDE.md:
 
 - [ ] Under 50 lines total
 - [ ] No formatting/linting rules
@@ -104,6 +106,61 @@ Before finalizing CLAUDE.md:
 - [ ] Build/test commands are accurate
 - [ ] Tech stack versions are current
 - [ ] No duplicated info from config files
+
+### Update Checklist
+
+Before finalizing updates to existing CLAUDE.md:
+
+- [ ] Read existing CLAUDE.md before making changes
+- [ ] Identified what actually changed in codebase
+- [ ] Preserved user customizations and custom sections
+- [ ] Updated only sections that are now outdated
+- [ ] Verified all commands still work
+- [ ] Confirmed referenced files/paths exist
+- [ ] Kept file under 50 lines
+- [ ] Did not reintroduce previously removed content
+
+## Updating Existing CLAUDE.md
+
+When a CLAUDE.md already exists, update rather than recreate.
+
+### When to Update
+
+- New dependencies or frameworks added
+- Project structure changed significantly
+- Build/test commands changed
+- Documented paths no longer exist
+- Tech stack versions are outdated
+
+### Update Strategy
+
+**Minimal changes preferred**: Only modify sections that are actually outdated. Don't rewrite the entire file if only one section needs updating.
+
+**Detect user customizations**: Look for:
+- Non-standard section headings
+- Comments like `<!-- custom -->` or `<!-- keep -->`
+- Project-specific warnings or notes
+- Links to team wikis or external docs
+
+**Merge, don't replace**: When adding new information, integrate it into existing structure rather than replacing sections wholesale.
+
+### Common Update Scenarios
+
+| Scenario | Action |
+|----------|--------|
+| New dependency added | Add to Tech Stack section |
+| Directory renamed | Update Project Structure |
+| New script added | Add to Development commands |
+| Deprecated command | Remove or update command |
+| New doc file created | Add to Additional Documentation |
+| Framework upgraded | Update version in Tech Stack |
+
+### Handling Conflicts
+
+If codebase contradicts CLAUDE.md:
+1. Verify which is correct (run commands, check files)
+2. Update CLAUDE.md to match reality
+3. If user made intentional customizations, ask before overwriting
 
 ## Example: Minimal CLAUDE.md
 
