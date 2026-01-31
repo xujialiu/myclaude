@@ -1,28 +1,55 @@
 # Chapter Writing Guidelines
 
-Follow these guidelines when writing book chapters (Markdown files and companion notebooks).
+Follow these guidelines when writing book chapters.
 
 ## Core Philosophy
 
-**The Feynman Method:**
-- Explain core intuition as if to a bright child before mathematics or code
-- Use plain English; define technical terms immediately with common-sense analogies
-- Acknowledge when concepts are "weird" or counter-intuitive—never say "trivially"
+**Feynman Method:**
+- Explain intuition as if to a bright child before mathematics or code
+- Plain English; define technical terms with common-sense analogies
+- Acknowledge when concepts are counter-intuitive—never say "trivially"
 
-**The O'Reilly Standard:**
+**O'Reilly Standard:**
 - Problem-solution oriented sections
-- Production-ready, PEP 8 compliant code with comments
+- Production-ready code
 - Clear progression from basic to advanced
+
+## Directory Structure
+
+```
+<book>/
+├── code/
+│   ├── data/01_<chapter_name>/      # Input data
+│   ├── output/01_<chapter_name>/    # Code outputs
+│   ├── 01_<chapter_name>.ipynb      # Notebook (preferred)
+│   └── 01_<chapter_name>/           # Python files (when needed)
+│       └── 01_<example_name>.py
+└── markdown/
+    ├── attachments/                 # Images/figures
+    └── 01_<chapter_name>.md         # Markdown files
+```
+
+## Code Format Selection
+
+**Use Jupyter notebooks (preferred) for:**
+- Interactive code exploration
+- Data visualization
+- Step-by-step tutorials
+- Code with visual outputs
+
+**Use Python files only for:**
+- pytest test suites
+- CLI applications
+- Multi-file modules
+- Code requiring specific execution order
 
 ## Chapter Structure
 
-Every chapter follows this format with **progressive difficulty**:
-
-```
+```markdown
 # Chapter Title
 
 ## Learning Objective
-[1-2 sentences: what the reader will understand/build]
+[1-2 sentences: what reader will understand/build]
 
 ## Basic: [Foundation Concept]
 [Core intuition, simplest case, minimal code]
@@ -37,105 +64,82 @@ Every chapter follows this format with **progressive difficulty**:
 [Hands-on task at intermediate/advanced level]
 ```
 
-## Progressive Difficulty Guidelines
+## Progressive Difficulty
 
-**Basic section:**
-- Introduce the core concept with simplest possible example
-- Use toy data and minimal parameters
-- Focus on "what" and "why", not edge cases
+**Basic:** Simplest example, toy data, focus on "what" and "why"
 
-**Intermediate section:**
-- Build on basic example with realistic complexity
-- Handle common edge cases and errors
-- Introduce configuration options and parameters
+**Intermediate:** Realistic complexity, edge cases, configuration options
 
-**Advanced section:**
-- Address production concerns (performance, scale, error handling)
-- Show integration with other tools/libraries
-- Discuss trade-offs and when to use alternatives
+**Advanced:** Production concerns, optimization, trade-offs
 
-Each section must reference concepts from previous sections.
+## Figure Handling
 
-## Markdown File Guidelines
+Save all code-generated images to `markdown/attachments/`:
 
-**Imports and code flow:**
-- No need to duplicate imports—assume sequential reading
-- Introduce imports when first needed, then use freely afterward
-- Focus on explanation and narrative flow
+```python
+import matplotlib.pyplot as plt
+import os
 
-**Narrative cells:**
-Build intuition before code:
+# Create attachments directory
+os.makedirs("../markdown/attachments", exist_ok=True)
 
-```markdown
-## The Core Idea
+fig, ax = plt.subplots()
+ax.plot(data)
+ax.set_xlabel("X Label")
+ax.set_ylabel("Y Label")
+ax.set_title("Figure Title")
 
-Imagine you're organizing a library. **A hash table** is like giving every book
-a specific shelf number based on its title—you don't search; you calculate
-exactly where it belongs.
-
-The key insight: we trade *memory* for *speed*.
+# Save to attachments
+fig.savefig("../markdown/attachments/01_intro_figure1.png", dpi=150, bbox_inches="tight")
+plt.close()
 ```
 
-**Code blocks:**
-- Clean, well-commented code
-- PEP 8 compliant for Python
-- Explain what the code does before showing it
-
-**Math explanations:**
-Conceptual explanation first, then LaTeX:
-
+Link in Markdown:
 ```markdown
-The **collision probability** grows as the table fills. If we have $n$ items
-in a table of size $m$:
-
-$$P(\text{collision}) = \frac{n}{m}$$
+![Revenue over time](./attachments/01_intro_figure1.png)
 ```
 
-## Data and Output Directories
+**Naming convention:** `[NN]_[chapter_slug]_[description].png`
 
-**Data files (`./data/chapter_<num>/`):**
-- Store input data (CSV, JSON, images, etc.) used by the chapter
-- Create directory before saving: `os.makedirs("./data/chapter_01", exist_ok=True)`
-- Reference in code as `./data/chapter_01/filename.csv`
+## Data and Output Paths
 
-**Output files (`./output/chapter_<num>/`):**
-- Store notebook-generated outputs (plots, models, results)
-- Create directory before saving: `os.makedirs("./output/chapter_01", exist_ok=True)`
-- Save outputs to `./output/chapter_01/figure.png`
-
-Example:
 ```python
 import os
 import pandas as pd
-import matplotlib.pyplot as plt
 
-# Create output directory
-os.makedirs("./output/chapter_01", exist_ok=True)
+# Paths relative to code/ directory
+DATA_DIR = "./data/01_intro"
+OUTPUT_DIR = "./output/01_intro"
+ATTACHMENTS_DIR = "../markdown/attachments"
+
+# Create directories
+os.makedirs(DATA_DIR, exist_ok=True)
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+os.makedirs(ATTACHMENTS_DIR, exist_ok=True)
 
 # Load data
-df = pd.read_csv("./data/chapter_01/sales.csv")
+df = pd.read_csv(f"{DATA_DIR}/sales.csv")
 
-# Save output
-fig, ax = plt.subplots()
-ax.plot(df["date"], df["revenue"])
-fig.savefig("./output/chapter_01/revenue_plot.png")
+# Save outputs (non-figure files)
+df.to_csv(f"{OUTPUT_DIR}/processed.csv", index=False)
+
+# Save figures to attachments
+fig.savefig(f"{ATTACHMENTS_DIR}/01_intro_sales_chart.png")
 ```
 
-## Companion Notebook Guidelines (Python Only)
+## Jupyter Notebook Guidelines
 
-For Python books, create a companion `.ipynb` file that mirrors the Markdown chapter.
-
-**CRITICAL: Each cell must run independently** without executing previous cells:
+**Each cell must run independently:**
+- Include all imports in every cell
+- Redefine functions/data when needed
+- No undefined variables from previous cells
 
 ```python
 # Cell 1: Basic example (self-contained)
 import numpy as np
-from collections import defaultdict
 
 def hash_function(key: str, table_size: int) -> int:
-    """Convert a string key to an array index."""
-    ascii_sum = sum(ord(char) for char in key)
-    return ascii_sum % table_size
+    return sum(ord(char) for char in key) % table_size
 
 books = ["Moby Dick", "1984", "Dune"]
 for book in books:
@@ -143,8 +147,9 @@ for book in books:
 ```
 
 ```python
-# Cell 2: Visualization (must redefine function and data)
+# Cell 2: Visualization (redefines what it needs)
 import matplotlib.pyplot as plt
+import os
 
 def hash_function(key: str, table_size: int) -> int:
     return sum(ord(char) for char in key) % table_size
@@ -152,35 +157,69 @@ def hash_function(key: str, table_size: int) -> int:
 books = ["Moby Dick", "1984", "Dune"]
 indices = [hash_function(book, 10) for book in books]
 
+os.makedirs("../markdown/attachments", exist_ok=True)
+
 fig, ax = plt.subplots(figsize=(10, 4))
 ax.bar(range(10), [indices.count(i) for i in range(10)])
 ax.set_xlabel("Shelf Number")
 ax.set_ylabel("Books Assigned")
-ax.set_title("Hash Distribution Across Shelves")
+ax.set_title("Hash Distribution")
+fig.savefig("../markdown/attachments/01_hash_distribution.png", dpi=150)
 plt.show()
 ```
 
-**Why independent cells?**
-- Readers can run any cell without running the whole notebook
-- Easier to debug and test individual concepts
-- More robust for teaching—no hidden state issues
+## Python File Guidelines (when notebooks unsuitable)
+
+For pytest, CLI tools, or multi-file modules:
+
+```
+code/01_testing/
+├── 01_test_basics.py
+├── 02_test_fixtures.py
+└── conftest.py
+```
+
+Run with:
+```bash
+conda activate books
+cd code/01_testing
+pytest -v
+```
+
+## Environment Commands
+
+```bash
+# Activate environment
+conda activate books
+
+# Install dependencies
+uv pip install pandas matplotlib numpy
+
+# Format code
+ruff format ./code/
+ruff check --fix ./code/
+
+# Run notebook
+jupyter nbconvert --execute --inplace ./code/01_intro.ipynb
+```
 
 ## Quality Checklist
 
-### Markdown File
-- [ ] Learning objective is specific and measurable
-- [ ] Every concept has an analogy before formalism
-- [ ] Code blocks are properly formatted
-- [ ] Logical flow from basic to advanced
+### Markdown
+- [ ] Learning objective is specific
+- [ ] Every concept has analogy before formalism
 - [ ] No "trivially" or "it is easy to see"
+- [ ] Figures linked from attachments/
 
-### Companion Notebook (Python only)
-- [ ] Mirrors the Markdown structure
-- [ ] **Each code cell runs independently:**
-  - [ ] All imports included in every cell
-  - [ ] Functions/data redefined when needed
-  - [ ] No undefined variables from previous cells
-- [ ] Visualizations have axis labels and titles
-- [ ] Challenge exercise is included
-- [ ] Data loaded from `./data/chapter_<num>/`
-- [ ] Outputs saved to `./output/chapter_<num>/`
+### Notebook
+- [ ] Each cell runs independently
+- [ ] All visualizations have labels/titles
+- [ ] Figures saved to attachments/
+- [ ] Data from code/data/[chapter]/
+- [ ] Outputs to code/output/[chapter]/
+
+### Python Files
+- [ ] Organized in chapter directory
+- [ ] Numbered sequentially
+- [ ] Tests pass with pytest
+- [ ] Formatted with ruff
